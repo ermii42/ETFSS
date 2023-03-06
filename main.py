@@ -20,7 +20,7 @@ step_ind = list()
 step_vol = list()
 step_ind.append(float(input("Введите макс размер шага индивидуального перемещения: ")))
 step_vol.append(float(input("Введите макс размер шага коллективно-волевого перемещения: ")))
-number_of_agents = 10  # количество агентов популяции (20-40-50 должно быть)
+number_of_agents = 100  # количество агентов популяции (20-40-50 должно быть)
 max_weight = 50
 w = list()
 w.append(list(max_weight / 2 for i in range(number_of_agents)))
@@ -45,7 +45,7 @@ for i in range(1, number_of_agents):
     f_t.append(f_i_t)
 
 F.append(f_t)
-iter_max = 1000  # больше 500 не нужно
+iter_max = 500  # больше 500 не нужно
 # критерий останова может быть и другим
 # t не только как поколение, но и кол-во иттераций
 while t <= iter_max:
@@ -110,7 +110,7 @@ while t <= iter_max:
             for j in range(len(P[t][0])):
                 P[t][i][j] += step_vol[t] * r2[j] * (P[t][i][j] - B_t[j]) / abs((P[t][i][j] - B_t[j]))
             # P[t][i] += step_vol[t] * r2 * (P[t][i] - B) / abs((P[t][i] - B))
-    print(*P[t])
+
     # выбрать агента  ptgbest, такого, что
     p_qbest_t = P[t][0]
     for i in P[t]:
@@ -118,6 +118,7 @@ while t <= iter_max:
             p_qbest = i
 
 print(p_qbest)
+print(f(p_qbest))
 # for i in P:
 #     print(*i)
 # f(P[t][i]) for i in range(number_of_agents))
