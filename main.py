@@ -1,32 +1,31 @@
 import time
-from math import cos, pi, exp
+from math import cos, pi, exp, e
 import numpy
 from numba import njit
 import matplotlib.pyplot as plt
 
+#%%
 y = 5
-n_args_count = 1  # количество x-ов, подаваемых в тестовую функцию
+n_args_count = 2  # количество x-ов, подаваемых в тестовую функцию
 iter_max = 500  # больше 500 не нужно
 number_of_agents = 50  # количество агентов популяции (20-40-50 должно быть)
-max_weight = 50  # максимальный вес рыбы
+max_weight = 100  # максимальный вес рыбы
 
 
 @njit()
-def f(x):  # Тестовая функция Растригина
-    A = 10
-    result = 0
-    for i in x:
-        result += i ** 2 - A * cos(2 * pi * i)
-    result += A * len(x)
-
+def f(x):  # Тестовая функция Экли
+    result = -20 * exp(-0.2 * (0.5 * (x[0] ** 2 + x[1] ** 2)) ** 0.5) \
+             - exp(0.5 * (cos(2 * pi * x[0]) + cos(2 * pi * x[1]))) + e + 20
     return result
 
-
+#%% md
+##Генерация начальных агентов
+#%%
 @njit()
 def generate_agents():
     result = numpy.zeros((number_of_agents, n_args_count))
     for i in range(number_of_agents):
-        result[i] = numpy.random.uniform(-5.12, 5.12, n_args_count)
+        result[i] = numpy.random.uniform(-5, 5, n_args_count)
     return result
 
 
@@ -37,8 +36,8 @@ def main_function():
     p_qbest_list = list()  # массив p_qbest в разные моменты поколений
     # step_ind.append(float(input("Введите макс размер шага индивидуального перемещения: ")))
     # step_vol.append(float(input("Введите макс размер шага коллективно-волевого перемещения: ")))
-    step_ind.append(0.05)
-    step_vol.append(0.05)
+    step_ind.append(1)
+    step_vol.append(1)
     w = list()
     w.append(numpy.zeros(number_of_agents) + max_weight / 2)
 
@@ -52,13 +51,9 @@ def main_function():
     p_qbest_list.append(p_qbest)
 
     f_t = list()
-    f_min = f(P[t][0])
-    f_t.append(f_min)
+    f_t.append(f(P[t][0]))
     for i in range(1, number_of_agents):
         f_I = f(P[t][i])
-        if f_I < f_min:
-            f_min = f_I
-            p_qbest = P[t][i]
         f_t.append(f_I)
 
     # значение функции для каждого агента
@@ -77,7 +72,7 @@ def main_function():
         # для каждого агента выполнить
         for i in range(number_of_agents):
             # спросить про r1 и r2, сколько в них значений
-            r1 = numpy.random.uniform(0, 1, n_args_count)
+            r1 = numpy.random.uniform(-1, 1, n_args_count)
 
             P[t][i] += (r1 * step_ind[t])
 
@@ -136,7 +131,7 @@ def main_function():
         for i in P[t]:
             if f(p_qbest) > f(i):
                 p_qbest = i
-        p_qbest_list.append(p_qbest)
+        p_qbest_list.append(numpy.copy(p_qbest))
 
     return p_qbest_list
 
@@ -145,7 +140,7 @@ start = time.time()
 best_lst = main_function()
 best = best_lst[-1]
 end = time.time() - start
-# print(*, sep='\n')
+print(*[f(i) for i in best_lst], sep='\n')
 print(f'Coordinates of p_qbest:\t\t\t{best}')
 print(f'The function value of pqbest:\t{f(best)}')
 print(f'Algorithm running time:\t\t\t{end} s')
