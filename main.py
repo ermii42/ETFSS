@@ -1,10 +1,9 @@
 from math import cos, pi, exp
-from random import uniform
 import numpy
 from numba import njit
 
 
-# @njit()
+@njit()
 def f(x):  # Тестовая функция Растригина
     A = 10
     result = 0
@@ -15,9 +14,9 @@ def f(x):  # Тестовая функция Растригина
     return result
 
 
-# @njit()
+@njit()
 def generate_agents():
-    number_of_agents, n_args_count = 50, 1
+    number_of_agents, n_args_count = 50, 2
     result = numpy.zeros((number_of_agents, n_args_count))
     for i in range(number_of_agents):
         result[i] = numpy.random.uniform(-5.12, 5.12, n_args_count)
@@ -25,11 +24,11 @@ def generate_agents():
     # return numpy.array(list(list(uniform(-5.12, 5.12) for j in range(n_args_count)) for i in range(number_of_agents)))
 
 
-# @njit()
+@njit()
 def main_function():
     y = 5
-    n_args_count = 1  # количество x-ов, подаваемых в тестовую функцию
-    iter_max = 500  # больше 500 не нужно
+    n_args_count = 2  # количество x-ов, подаваемых в тестовую функцию
+    iter_max = 300  # больше 500 не нужно
     number_of_agents = 50  # количество агентов популяции (20-40-50 должно быть)
     max_weight = 50  # максимальный вес рыбы
 
@@ -65,7 +64,8 @@ def main_function():
         f_t.append(f_I)
 
     # значение функции для каждого агента
-    F = numpy.array([numpy.copy(f_t)])
+    F = [numpy.array(f_t)]
+    # F = numpy.array([f_t])
     # макс кол-во иттераций
     # критерий останова может быть и другим
     # t не только как поколение, но и кол-во иттераций
@@ -76,7 +76,8 @@ def main_function():
 
         P.append(numpy.copy(P[t - 1]))
         w.append(numpy.copy(w[t - 1]))
-        F = numpy.append(F, [numpy.zeros(number_of_agents)], axis=0)
+        F.append(numpy.zeros(number_of_agents))
+        # F = numpy.append(F, [numpy.zeros(number_of_agents)], axis=0)
         # для каждого агента выполнить
         for i in range(number_of_agents):
             # спросить про r1 и r2, сколько в них значений
@@ -95,12 +96,13 @@ def main_function():
                 w[t][i] += (F[t][i] - F[t - 1][i]) / (max(F[t] - F[t - 1]))
 
         # вычисляем вектор коллективно-инстинктивного перемещения
-        I_t = numpy.array(numpy.zeros(n_args_count))
-        delta_F = numpy.array([])
-        P_mul_F = numpy.array(numpy.zeros((number_of_agents, n_args_count))) # [[0 for j in range(n_args_count)] for i in range(number_of_agents)])
+        I_t = numpy.zeros(n_args_count)
+
+        delta_F = numpy.zeros(number_of_agents)
+        P_mul_F = numpy.zeros((number_of_agents, n_args_count)) # [[0 for j in range(n_args_count)] for i in range(number_of_agents)])
 
         for i in range(number_of_agents):
-            delta_F = numpy.append(delta_F, F[t][i] - F[t - 1][i])
+            delta_F[i] = F[t][i] - F[t - 1][i]
             P_mul_F[i] = (P[t][i] - P[t - 1][i]) * delta_F[i]
 
         for j in range(n_args_count):
@@ -108,21 +110,30 @@ def main_function():
             for i in range(number_of_agents):
                 s += P_mul_F[i][j]
             I_t[j] = s
-        I_t = I_t / sum(delta_F)
+        I_t /= sum(delta_F)
         # Применяем оператор коллективно-инстинктивного перемещения к каждому агенту
         P[t] += I_t
 
         # Вычисляем Бариоцентр
-        B_t = list()
+        # B_t = list()
+        # for j in range(n_args_count):
+        #     sm = 0
+        #     for i in range(number_of_agents):
+        #         sm += P[t][i][j] * w[t][i]
+        #     B_t.append(sm)
+        # sm2 = 0
+        # for i in range(number_of_agents):
+        #     sm2 += w[t][i]
+        # B_t = numpy.array(B_t)
+        B_t = numpy.zeros(n_args_count)
         for j in range(n_args_count):
             sm = 0
             for i in range(number_of_agents):
                 sm += P[t][i][j] * w[t][i]
-            B_t.append(sm)
+            B_t[j] = sm
         sm2 = 0
         for i in range(number_of_agents):
             sm2 += w[t][i]
-        B_t = numpy.array(B_t)
         B_t /= sm2
 
         # для каждого агента выполнять
