@@ -2,6 +2,7 @@ import time
 from math import cos, pi, exp
 import numpy
 from numba import njit
+import matplotlib.pyplot as plt
 
 y = 5
 n_args_count = 1  # количество x-ов, подаваемых в тестовую функцию
@@ -65,7 +66,7 @@ def main_function():
     # макс кол-во иттераций
     # критерий останова может быть и другим
     # t не только как поколение, но и кол-во иттераций
-    while t <= iter_max:
+    while t < iter_max - 1:
         t += 1
         step_ind.append(step_ind[0] * exp(-y * t / iter_max))
         step_vol.append(step_vol[0] * exp(-y * t / iter_max))
@@ -144,7 +145,14 @@ start = time.time()
 best_lst = main_function()
 best = best_lst[-1]
 end = time.time() - start
-print(*[f(i) for i in best_lst], sep='\n')
+# print(*, sep='\n')
 print(f'Coordinates of p_qbest:\t\t\t{best}')
 print(f'The function value of pqbest:\t{f(best)}')
 print(f'Algorithm running time:\t\t\t{end} s')
+
+# f_val = [f(i) for i in best_lst]
+# plt.plot(numpy.arange(iter_max), f_val)
+# plt.xlabel("Номер поколения")
+# plt.ylabel("Лучшее значение на данный момент")
+# plt.title("Глобально лучшее решение для всех частиц")
+# plt.show()
