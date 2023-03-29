@@ -1,0 +1,3 @@
+C:/Users/user/Documents/university/4 semak/petuhon/индивидуальный проект/ETFSS/cmake-build-debug/CMakeFiles/ETFSS.dir
+C:/Users/user/Documents/university/4 semak/petuhon/индивидуальный проект/ETFSS/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/user/Documents/university/4 semak/petuhon/индивидуальный проект/ETFSS/cmake-build-debug/CMakeFiles/rebuild_cache.dir
