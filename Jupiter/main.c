@@ -350,9 +350,9 @@ void main_function(float (*f)(float *, int), void (*generate_agents)(float **, i
 
 int main() {
 
-    printf("Hello, World!\n");
+//    printf("Hello, World!\n");
     int number_of_agents_ = 50;
-    int n_args_count_ = 2;
+    int n_args_count_ = 100;
     int iter = 500;
     main_function((float (*)(float *, int)) f1, generate_agents1, n_args_count_, iter, number_of_agents_, 100);
 
