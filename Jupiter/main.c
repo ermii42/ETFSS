@@ -352,7 +352,7 @@ int main() {
 
 //    printf("Hello, World!\n");
     int number_of_agents_ = 50;
-    int n_args_count_ = 100;
+    int n_args_count_ = 10;
     int iter = 500;
     main_function((float (*)(float *, int)) f1, generate_agents1, n_args_count_, iter, number_of_agents_, 100);
 
