@@ -4,6 +4,13 @@
 #include "math.h"
 
 #define PI 3.1415926535897931159979635
+#define e 2.7182818284904523536028747
+
+typedef struct {
+    float *best_solution;
+    float best_y;
+    double time_spent;
+} Result;
 
 float random_uniform2(float min, float max) {
     return min + (max - min) / RAND_MAX * rand();
@@ -117,6 +124,103 @@ void generate_agents1(float **arr, int number_of_agents, int n_args_count) {
     }
 }
 
+float f2(const float *x, int n_args_count) { // Тестовая функция Экли
+
+    float result = -20 * exp(-0.2 * sqrt(0.5 * (x[0] * x[0] + x[1] * x[1]))) \
+ - exp(0.5 * (cos(2 * PI * x[0]) + cos(2 * PI * x[1]))) + e + 20;
+
+    return result;
+}
+
+void generate_agents2(float **arr, int number_of_agents, int n_args_count) {
+    for (int i = 0; i < number_of_agents; i++) {
+        for (int j = 0; j < n_args_count; j++) {
+            arr[i][j] = random_uniform2(-5.f, 5.f);
+        }
+    }
+}
+
+float f3(const float *x, int n_args_count) { // Тестовая функция Сферы
+
+    float result = 0;
+    for (int i = 0; i < n_args_count; i++) {
+        result += x[i] * x[i];
+    }
+    return result;
+}
+
+void generate_agents3(float **arr, int number_of_agents, int n_args_count) {
+    for (int i = 0; i < number_of_agents; i++) {
+        for (int j = 0; j < n_args_count; j++) {
+            arr[i][j] = random_uniform2(-2.f, 2.f);
+        }
+    }
+}
+
+float f4(const float *x, int n_args_count) { // Тестовая функция Розенбока
+
+    float result = 0;
+    for (int i = 0; i < n_args_count - 1; i++) {
+        result += 100 * (x[i + 1] - x[i] * x[i]) * (x[i + 1] - x[i] * x[i]) + (x[i] - 1) * (x[i] - 1);
+    }
+    return result;
+}
+
+void generate_agents4(float **arr, int number_of_agents, int n_args_count) {
+    for (int i = 0; i < number_of_agents; i++) {
+        for (int j = 0; j < n_args_count; j++) {
+            arr[i][j] = random_uniform2(-11.f, 11.f);
+        }
+    }
+}
+
+float f5(const float *x, int n_args_count) { // Тестовая функция Била
+
+    float result = (1.5 - x[0] + x[0] * x[1]) * (1.5 - x[0] + x[0] * x[1]) + \
+             (2.25 - x[0] + x[0] * x[1] * x[1]) * (2.25 - x[0] + x[0] * x[1] * x[1]) + \
+             (2.625 - x[0] + x[0] * x[1] * x[1] * x[1]) * (2.625 - x[0] + x[0] * x[1] * x[1] * x[1]);
+    return result;
+}
+
+void generate_agents5(float **arr, int number_of_agents, int n_args_count) {
+    for (int i = 0; i < number_of_agents; i++) {
+        for (int j = 0; j < n_args_count; j++) {
+            arr[i][j] = random_uniform2(-4.5f, 4.5f);
+        }
+    }
+}
+
+float f6(const float *x, int n_args_count) { // Тестовая функция Гольдшейна-прайса
+
+    float result = (1 + (x[0] + x[1] + 1) * (x[0] + x[1] + 1) *
+                        (19 - 14 * x[0] + 3 * x[0] * x[0] - 14 * x[1] + 6 * x[0] * x[1] + 3 * x[1] * x[1])) * \
+             (30 + (2 * x[0] - 3 * x[1]) * (2 * x[0] - 3 * x[1]) *
+                   (18 - 32 * x[0] + 12 * x[0] * x[0] + 48 * x[1] - 36 * x[0] * x[1] + 27 * x[1] * x[1]));
+    return result;
+}
+
+void generate_agents6(float **arr, int number_of_agents, int n_args_count) {
+    for (int i = 0; i < number_of_agents; i++) {
+        for (int j = 0; j < n_args_count; j++) {
+            arr[i][j] = random_uniform2(-2.f, 2.f);
+        }
+    }
+}
+
+float f7(const float *x, int n_args_count) { // Тестовая функция Бута
+
+    float result = (x[0] * 2 * x[1] - 7) * (x[0] * 2 * x[1] - 7) + (2 * x[0] + x[1] - 5) * (2 * x[0] + x[1] - 5);
+    return result;
+}
+
+void generate_agents7(float **arr, int number_of_agents, int n_args_count) {
+    for (int i = 0; i < number_of_agents; i++) {
+        for (int j = 0; j < n_args_count; j++) {
+            arr[i][j] = random_uniform2(-10.f, 10.f);
+        }
+    }
+}
+
 void output_array2d(float **arr, int n, int m) {
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < m; j++) {
@@ -159,56 +263,28 @@ void test() {
         arr2[i] = (float *) malloc(m * sizeof(float));
     }
     for (int i = 0; i < n; i++) {
-        for(int j=0; j<m; j++){
+        for (int j = 0; j < m; j++) {
             arr1[i][j] = 1;
             arr2[i][j] = 2;
         }
     }
-    for(int i=0; i<500; i++){
+    for (int i = 0; i < 500; i++) {
         arr1[i] = add_arrays(arr1[i], arr2[i], m);
     }
     output_array2d(arr1, n, m);
-//    output_array2d(arr1, n, m);
-//    printf("\n");
-//    output_array2d(arr2, n, m);
-//    copy_2d(arr1, (const float **) arr2, n, m);
-//    arr1[0][0] = -1;
-//    printf("\n");
-//    output_array2d(arr1, n, m);
-//    printf("\n");
-//    output_array2d(arr2, n, m);
-//    output_array1d(arr1, n);
-//    output_array1d(arr2, n);
-//    printf("\n");
-//    copy_1d(arr1, arr2, n);
-////    arr1 = arr2;
-//    arr1[0] = 1;
-//    output_array1d(arr1, n);
-//    output_array1d(arr2, n);
-//    output_array1d(mul_arrays(arr1, arr2, n), n);
-//    output_array1d(div_arrays(arr1, arr2, n), n);
-//    output_array1d(add_arrays(arr1, arr2, n), n);
-//    output_array1d(sub_arrays(arr1, arr2, n), n);
-//    printf("\n");
-//
-//    output_array1d(mul_array_number(arr1, m, n), n);
-//    output_array1d(div_array_number(arr1, m, n), n);
-//    output_array1d(add_array_number(arr1, m, n), n);
-//    output_array1d(sub_array_number(arr1, m, n), n);
-//    printf("\n");
-//    printf("%f", sum_1d(arr1, n));
 }
 
-void main_function(float (*f)(float *, int), void (*generate_agents)(float **, int, int), int n_args_count,
-                   int iter_max, int number_of_agents, float max_weight) {
+Result main_function(float (*f)(float *, int), void (*generate_agents)(float **, int, int), int n_args_count,
+                     int iter_max, int number_of_agents, float max_weight) {
 
+    clock_t begin = clock();
     srand(time(NULL));
     int y = 5;
-    float *step_ind = (float *) malloc(iter_max* sizeof(float ));
-    float *step_vol = (float *) malloc(iter_max* sizeof(float ));
-    float **p_qbest_list = (float **) malloc(iter_max * sizeof(float *));
+    float *step_ind = (float *) malloc(iter_max * sizeof(float));
+    float *step_vol = (float *) malloc(iter_max * sizeof(float));
+    float **p_gbest_list = (float **) malloc(iter_max * sizeof(float *));
     for (int i = 0; i < iter_max; i++) {
-        p_qbest_list[i] = (float *) malloc(n_args_count * sizeof(float));
+        p_gbest_list[i] = (float *) malloc(n_args_count * sizeof(float));
     }
     float **w = (float **) malloc(iter_max * sizeof(float *));
     for (int i = 0; i < iter_max; i++) {
@@ -234,20 +310,20 @@ void main_function(float (*f)(float *, int), void (*generate_agents)(float **, i
     }
     // P[t] = generate agents
     generate_agents(P[t], number_of_agents, n_args_count);
-    float *p_qbest = (float *) malloc(n_args_count * sizeof(float));
-    copy_1d(p_qbest, P[t][0], n_args_count);
+    float *p_gbest = (float *) malloc(n_args_count * sizeof(float));
+    copy_1d(p_gbest, P[t][0], n_args_count);
     for (int i = 1; i < number_of_agents; i++) {
 
-        if (f(p_qbest, n_args_count) > f(P[t][i], n_args_count)) {
-//            p_qbest = P[t][i];
-            copy_1d(p_qbest, P[t][i], n_args_count);
+        if (f(p_gbest, n_args_count) > f(P[t][i], n_args_count)) {
+//            p_gbest = P[t][i];
+            copy_1d(p_gbest, P[t][i], n_args_count);
         }
     }
-    p_qbest_list[t] = p_qbest;
+    p_gbest_list[t] = p_gbest;
 
     // значение функции для каждого агента
     for (int i = 0; i < number_of_agents; i++) {
-        F[t][i] = f1(P[t][i], n_args_count);
+        F[t][i] = f(P[t][i], n_args_count);
     }
     // макс кол-во иттераций
     // критерий останова может быть и другим
@@ -263,9 +339,9 @@ void main_function(float (*f)(float *, int), void (*generate_agents)(float **, i
     float *B_t = (float *) malloc(n_args_count * sizeof(float));
     float sm = 0;  // сумма
     float sm2 = 0;
-    float *p_qbest_t = (float *) malloc(n_args_count * sizeof(float));
+    float *p_gbest_t = (float *) malloc(n_args_count * sizeof(float));
     while (t < iter_max - 1) {
-        t+=1;
+        t += 1;
         step_ind[t] = step_ind[0] * exp(-y * t / iter_max);
         step_vol[t] = step_vol[0] * exp(-y * t / iter_max);
 //        printf("%i\n", t);
@@ -333,28 +409,79 @@ void main_function(float (*f)(float *, int), void (*generate_agents)(float **, i
                 }
             }
         }
-        copy_1d(p_qbest_t, P[t][0], n_args_count);
+        copy_1d(p_gbest_t, P[t][0], n_args_count);
         for (int i = 0; i < number_of_agents; i++) {
-            if (f(p_qbest_t, n_args_count) > f(P[t][i], n_args_count)) {
-                copy_1d(p_qbest_t, P[t][i], n_args_count);
+            if (f(p_gbest_t, n_args_count) > f(P[t][i], n_args_count)) {
+                copy_1d(p_gbest_t, P[t][i], n_args_count);
             }
         }
-        if (f(p_qbest_t, n_args_count) < f(p_qbest, n_args_count)) {
-            copy_1d(p_qbest, p_qbest_t, n_args_count);
+        if (f(p_gbest_t, n_args_count) < f(p_gbest, n_args_count)) {
+            copy_1d(p_gbest, p_gbest_t, n_args_count);
         }
-        copy_1d(p_qbest_list[t], p_qbest, n_args_count);
+        copy_1d(p_gbest_list[t], p_gbest, n_args_count);
     }
-    output_array1d(p_qbest, n_args_count);
-    printf("%f", f(p_qbest, n_args_count));
+    clock_t end = clock();
+    Result result;
+    result.best_solution = p_gbest;
+    result.best_y = f(p_gbest, n_args_count);
+    result.time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
+    return result;
 }
+
+Result test_Rastrigen(int number_of_agents_, int n_args_count_, int iter) {
+    Result res;
+    res = main_function((float (*)(float *, int)) f1, generate_agents1, n_args_count_, iter, number_of_agents_, 100);
+    return res;
+}
+
+Result test_Ekli(int number_of_agents_, int n_args_count_, int iter) {
+    Result res;
+    res = main_function((float (*)(float *, int)) f2, generate_agents2, n_args_count_, iter, number_of_agents_, 100);
+    return res;
+}
+
+Result test_Sphere(int number_of_agents_, int n_args_count_, int iter) {
+    Result res;
+    res = main_function((float (*)(float *, int)) f3, generate_agents3, n_args_count_, iter, number_of_agents_, 100);
+    return res;
+}
+
+Result test_Rosenbock(int number_of_agents_, int n_args_count_, int iter) {
+    Result res;
+    res = main_function((float (*)(float *, int)) f4, generate_agents4, n_args_count_, iter, number_of_agents_, 100);
+    return res;
+}
+
+Result test_Bila(int number_of_agents_, int n_args_count_, int iter) {
+    Result res;
+    res = main_function((float (*)(float *, int)) f5, generate_agents5, n_args_count_, iter, number_of_agents_, 100);
+    return res;
+}
+
+Result test_Goldsheina_Praisa(int number_of_agents_, int n_args_count_, int iter) {
+    Result res;
+    res = main_function((float (*)(float *, int)) f6, generate_agents6, n_args_count_, iter, number_of_agents_, 100);
+    return res;
+}
+
+Result test_Buta(int number_of_agents_, int n_args_count_, int iter) {
+    Result res;
+    res = main_function((float (*)(float *, int)) f7, generate_agents7, n_args_count_, iter, number_of_agents_, 100);
+    return res;
+}
+
 
 int main() {
 
 //    printf("Hello, World!\n");
     int number_of_agents_ = 50;
-    int n_args_count_ = 10;
+    int n_args_count_ = 2;
     int iter = 500;
-    main_function((float (*)(float *, int)) f1, generate_agents1, n_args_count_, iter, number_of_agents_, 100);
+    Result res;
+    res = test_Sphere(number_of_agents_, n_args_count_, iter);
+    output_array1d(res.best_solution, n_args_count_);
+    printf("%f\n", res.best_y);
+    printf("%f", res.time_spent);
 
 //    test();
     return 0;
