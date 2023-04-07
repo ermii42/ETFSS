@@ -15,7 +15,7 @@ def main_function(f, generate_agents, n_args_count, iter_max, number_of_agents, 
 
     step_ind = numpy.zeros(iter_max)
     step_vol = numpy.zeros(iter_max)
-    p_qbest_list = numpy.zeros((iter_max, n_args_count))  # массив p_qbest в разные моменты поколений
+    p_gbest_list = numpy.zeros((iter_max, n_args_count))  # массив p_gbest в разные моменты поколений
     w = numpy.zeros((iter_max, number_of_agents))
     P = numpy.zeros((iter_max, number_of_agents, n_args_count))  # Начальная популяция
     F = numpy.zeros((iter_max, number_of_agents))  # значение функции для каждого агента
@@ -26,11 +26,11 @@ def main_function(f, generate_agents, n_args_count, iter_max, number_of_agents, 
     w[t] += max_weight / 2
     P[t] = generate_agents(number_of_agents, n_args_count)  # Случано сгенерированное текущее поколение
 
-    p_qbest = P[t][0]
+    p_gbest = P[t][0]
     for i in P[t]:
-        if f(p_qbest) > f(i):
-            p_qbest = i
-    p_qbest_list[t] = p_qbest
+        if f(p_gbest) > f(i):
+            p_gbest = i
+    p_gbest_list[t] = p_gbest
 
     f_t = numpy.zeros(number_of_agents)
     for i in range(number_of_agents):
@@ -104,15 +104,15 @@ def main_function(f, generate_agents, n_args_count, iter_max, number_of_agents, 
                 for j in range(len(P[t][0])):
                     P[t][i][j] += step_vol[t] * r2[j] * (P[t][i][j] - B_t[j]) / abs((P[t][i][j] - B_t[j]))
 
-        p_qbest_t = P[t][0]
+        p_gbest_t = P[t][0]
         for i in P[t]:
-            if f(p_qbest_t) > f(i):
-                p_qbest_t = i
-        if f(p_qbest_t) < f(p_qbest):
-            p_qbest = p_qbest_t
-        p_qbest_list[t] = p_qbest
+            if f(p_gbest_t) > f(i):
+                p_gbest_t = i
+        if f(p_gbest_t) < f(p_gbest):
+            p_gbest = p_gbest_t
+        p_gbest_list[t] = p_gbest
 
-    return p_qbest_list
+    return p_gbest_list
 
 print(f1([0,0]))
 #%%
